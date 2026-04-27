@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MLOps & DataOps — Bridging Data Engineering & Machine Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --surface-2: #f4f3ef;
+    --border: #e8e6e0;
+    --text: #1a1916;
+    --text-muted: #6b6760;
+    --text-light: #9e9b95;
+    --accent: #1a6b3c;
+    --accent-2: #2563eb;
+    --accent-warm: #c2410c;
+    --accent-purple: #6d28d9;
+    --tag-bg: #ecfdf5;
+    --tag-text: #065f46;
+    --code-bg: #f0fdf4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  .nav-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: .03em;
+  }
+
+  .nav-tags {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nav-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .nav-tag.green { background: #dcfce7; color: #166534; }
+  .nav-tag.blue  { background: #dbeafe; color: #1e40af; }
+
+  /* ── HERO ── */
+  .hero {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 72px 24px 48px;
+  }
+
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .hero-meta .dot { color: var(--border); }
+
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -.02em;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    max-width: 620px;
+    line-height: 1.65;
+  }
+
+  .hero-divider {
+    margin: 48px 0;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent) 0%, transparent 60%);
+    opacity: .3;
+  }
+
+  /* ── QUICK-STAT STRIP ── */
+  .stat-strip {
+    max-width: 780px;
+    margin: 0 auto 60px;
+    padding: 0 24px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: .02em;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .article {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── SECTION HEADERS ── */
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text);
+    letter-spacing: -.015em;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 32px 0 10px;
+    color: var(--text);
+  }
+
+  p {
+    color: var(--text);
+    margin-bottom: 18px;
+    font-weight: 300;
+  }
+
+  .section-block {
+    margin-bottom: 72px;
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    padding: 20px 24px;
+    border-radius: 0 10px 10px 0;
+    margin: 28px 0;
+    font-size: 15.5px;
+    color: var(--text-muted);
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  .callout strong { color: var(--text); font-style: normal; font-weight: 600; }
+
+  .callout.blue { border-left-color: var(--accent-2); }
+  .callout.orange { border-left-color: var(--accent-warm); }
+  .callout.purple { border-left-color: var(--accent-purple); }
+
+  /* ── PIPELINE FLOW ── */
+  .pipeline {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin: 32px 0;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .pipe-step {
+    flex: 1;
+    min-width: 110px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 16px 14px;
+    position: relative;
+    text-align: center;
+  }
+  .pipe-step:first-child { border-radius: 10px 0 0 10px; }
+  .pipe-step:last-child  { border-radius: 0 10px 10px 0; }
+
+  .pipe-step .pip-icon {
+    font-size: 1.3rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .pipe-step .pip-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .pipe-step .pip-sub {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .pipe-arrow {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    color: var(--accent);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── COMPARISON TABLE ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .compare-card.dataops { border-top: 3px solid var(--accent); }
+  .compare-card.mlops   { border-top: 3px solid var(--accent-2); }
+
+  .compare-card h4 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .compare-card.dataops h4 { color: var(--accent); }
+  .compare-card.mlops h4   { color: var(--accent-2); }
+
+  .compare-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .compare-card li {
+    font-size: 14px;
+    color: var(--text-muted);
+    padding-left: 18px;
+    position: relative;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .compare-card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    top: 1px;
+  }
+
+  .compare-card.dataops li::before { color: var(--accent); }
+  .compare-card.mlops   li::before { color: var(--accent-2); }
+
+  /* ── SHARED BADGE ── */
+  .shared-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .shared-box h4 {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .shared-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .shared-tag {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* ── LIFECYCLE STEPS ── */
+  .lifecycle {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 28px 0;
+    position: relative;
+  }
+
+  .lifecycle::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, var(--accent) 0%, var(--accent-2) 100%);
+    border-radius: 2px;
+  }
+
+  .lc-step {
+    display: flex;
+    gap: 20px;
+    padding: 16px 0;
+    position: relative;
+  }
+
+  .lc-num {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .lc-content { padding-top: 8px; }
+  .lc-content strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .lc-content span { font-size: 13.5px; color: var(--text-muted); font-weight: 300; }
+
+  /* ── TOOLS TABLE ── */
+  .tools-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .tools-table thead th {
+    background: var(--surface-2);
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tools-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    color: var(--text);
+  }
+
+  .tools-table tbody tr:last-child td { border-bottom: none; }
+  .tools-table tbody tr:nth-child(even) td { background: #fafaf8; }
+
+  .tools-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  /* ── USE CASE CARDS ── */
+  .usecase-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .uc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .uc-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.07); }
+
+  .uc-company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .uc-industry {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 16px;
+  }
+
+  .uc-item { margin-bottom: 14px; }
+
+  .uc-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .uc-badge.dataops { background: #dcfce7; color: #166534; }
+  .uc-badge.mlops   { background: #dbeafe; color: #1e40af; }
+
+  .uc-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* ── BEST PRACTICES ── */
+  .bp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 28px 0;
+  }
+
+  .bp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .bp-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .bp-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--text);
+  }
+
+  .bp-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* ── TRENDS ── */
+  .trends-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 24px 0;
+  }
+
+  .trend-item {
+    display: flex;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    align-items: flex-start;
+  }
+
+  .trend-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+
+  .trend-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .trend-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    font-weight: 300;
+    line-height: 1.55;
+  }
+
+  /* ── TAKEAWAYS ── */
+  .takeaway-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .takeaway {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .tk-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .tk-text {
+    font-size: 14.5px;
+    color: var(--text);
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* ── CLOSING QUOTE ── */
+  .closing-quote {
+    background: var(--text);
+    border-radius: 16px;
+    padding: 40px 40px;
+    margin: 56px 0;
+    text-align: center;
+  }
+
+  .closing-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+    font-weight: 700;
+    font-style: italic;
+    color: #f5f5f0;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+
+  .closing-quote .q-attr {
+    font-size: 12.5px;
+    color: #6b6b60;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+    padding: 36px 24px;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .footer-author {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .footer-author strong { color: var(--text); }
+
+  .footer-course {
+    font-size: 12.5px;
+    color: var(--text-light);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .stat-strip { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .stat-num { font-size: 1.8rem; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .usecase-grid { grid-template-columns: 1fr; }
+    .bp-grid { grid-template-columns: 1fr; }
+    .pipeline { flex-direction: column; }
+    .pipe-arrow { transform: rotate(90deg); }
+    .closing-quote { padding: 28px 20px; }
+  }
+
+  /* ── NUMERICAL EXAMPLE ── */
+  .num-example-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin: 28px 0;
+  }
+
+  .num-example-header {
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .num-example-header .ex-icon { font-size: 1.1rem; }
+
+  .num-example-header .ex-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .num-example-header .ex-scenario {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text);
+    margin-left: 4px;
+  }
+
+  .num-example-body { padding: 20px; }
+
+  /* pipeline run table */
+  .run-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 12px 0 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .run-table thead th {
+    background: #f0fdf4;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .run-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+
+  .run-table tbody tr:last-child td { border-bottom: none; }
+  .run-table tbody tr:nth-child(even) td { background: #fafaf8; }
+
+  .run-table td.mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent);
+  }
+
+  .status-pass {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .04em;
+  }
+
+  .status-fail {
+    display: inline-block;
+    background: #fee2e2;
+    color: #991b1b;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .04em;
+  }
+
+  .status-warn {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: .04em;
+  }
+
+  /* metric row */
+  .metric-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .metric-cell {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+
+  .metric-cell .mc-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .metric-cell .mc-val.blue  { color: var(--accent-2); }
+  .metric-cell .mc-val.orange { color: var(--accent-warm); }
+  .metric-cell .mc-val.purple { color: var(--accent-purple); }
+
+  .metric-cell .mc-label {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  /* experiment comparison table */
+  .exp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 14px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .exp-table thead th {
+    background: #dbeafe;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #1e40af;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exp-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text);
+  }
+
+  .exp-table td.label-col {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+  }
+
+  .exp-table tbody tr:last-child td { border-bottom: none; }
+  .exp-table tbody tr.winner td { background: #f0fdf4; }
+  .exp-table tbody tr.winner td.label-col::after {
+    content: ' ✓ promoted';
+    font-size: 10.5px;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+  }
+
+  /* drift chart bars */
+  .drift-chart { margin: 16px 0; }
+
+  .drift-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .drift-label {
+    width: 120px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .drift-bar-wrap {
+    flex: 1;
+    height: 22px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .drift-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width .6s ease;
+  }
+
+  .drift-bar.safe   { background: #86efac; }
+  .drift-bar.warn   { background: #fcd34d; }
+  .drift-bar.danger { background: #f87171; }
+
+  .drift-val {
+    width: 55px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    flex-shrink: 0;
+  }
+
+  .drift-threshold-line {
+    font-size: 11px;
+    color: var(--text-light);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 14px;
+  }
+
+  /* annotation */
+  .num-annotation {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #166534;
+    margin-top: 16px;
+    font-weight: 400;
+  }
+
+  .num-annotation.blue-ann {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
+  }
+
+  .num-annotation strong { font-weight: 600; }
+
+  /* code snippet */
+  .code-block {
+    background: #1e1e2e;
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: #cdd6f4;
+    white-space: pre;
+  }
+
+  .code-block .c-comment { color: #6c7086; }
+  .code-block .c-key     { color: #89b4fa; }
+  .code-block .c-str     { color: #a6e3a1; }
+  .code-block .c-num     { color: #fab387; }
+  .code-block .c-fn      { color: #cba6f7; }
+
+  @media (max-width: 640px) {
+    .metric-row { grid-template-columns: repeat(2, 1fr); }
+    .drift-label { width: 80px; font-size: 11px; }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1   { animation: fadeUp .6s ease both; }
+  .hero-sub  { animation: fadeUp .6s .15s ease both; }
+  .stat-strip { animation: fadeUp .6s .3s ease both; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+  <div class="nav-inner">
+    <span class="nav-logo">// mlops & dataops</span>
+    <div class="nav-tags">
+      <span class="nav-tag green">DataOps</span>
+      <span class="nav-tag blue">MLOps</span>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-meta">
+    <span>Yanala Lalit Aditya</span>
+    <span class="dot">·</span>
+    <span>Data Warehousing &amp; Mining</span>
+    <span class="dot">·</span>
+    <span>April 2025</span>
+  </div>
+  <h1>MLOps &amp; DataOps — <em>Bridging</em> Data Engineering &amp; Machine Learning</h1>
+  <p class="hero-sub">How two operational disciplines — one for data pipelines, the other for machine learning workflows — are coming together to power the modern AI-driven enterprise.</p>
+  <div class="hero-divider"></div>
+</div>
+
+<!-- STAT STRIP -->
+<div class="stat-strip">
+  <div class="stat-card">
+    <div class="stat-num">3×</div>
+    <div class="stat-label">Faster pipeline delivery with DataOps</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">60%</div>
+    <div class="stat-label">Reduction in data errors</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num">Days</div>
+    <div class="stat-label">MLOps cuts deploy time from months</div>
+  </div>
+</div>
+
+<!-- ARTICLE -->
+<div class="article">
+
+  <!-- INTRO -->
+  <div class="section-block">
+    <div class="section-label">Introduction</div>
+    <h2>The Reliability Gap in Data &amp; AI Systems</h2>
+    <p>
+      Ask any data team about their biggest pain points and you will hear the same stories: pipelines that silently fail at 2 AM, models that drift in production for weeks before anyone notices, analysts who distrust the numbers, and ML experiments that can never be reproduced. These are not bugs — they are symptoms of a discipline-level gap in how organisations manage data and machine learning at scale.
+    </p>
+    <p>
+      <strong>DataOps</strong> and <strong>MLOps</strong> exist to close this gap. Individually, each is a powerful operational methodology. Together, they form the backbone of a mature, production-grade data platform — one where data is reliable, models are trustworthy, and both evolve continuously without fear.
+    </p>
+    <div class="callout">
+      <strong>Think of it this way:</strong> DataOps builds the roads. MLOps drives the cars. Your data warehouse is the map that tells everyone where to go.
+    </div>
+  </div>
+
+  <!-- DATAOPS SECTION -->
+  <div class="section-block">
+    <div class="section-label">Part 01</div>
+    <h2>What is DataOps?</h2>
+    <p>
+      DataOps is a <em>methodology</em>, not a product. It borrows the best ideas from three adjacent disciplines — Agile software development, DevOps engineering, and Lean manufacturing — and applies them to the full lifecycle of data pipelines. The result is an organisation where data flows faster, breaks less often, and can be trusted implicitly by everyone who consumes it.
+    </p>
+    <p>
+      At its core, DataOps is the answer to a question every data team eventually asks: <em>"Why does it take so long to deliver a reliable data product?"</em> The answer is almost always the same — there is no version control, no automated testing, no monitoring, and no culture of shared ownership over data quality.
+    </p>
+
+    <h3>The Six Principles</h3>
+
+    <div class="lifecycle">
+      <div class="lc-step">
+        <div class="lc-num">1</div>
+        <div class="lc-content">
+          <strong>Continuous Integration &amp; Delivery for Data</strong>
+          <span>Every pipeline change lives in Git. Commits trigger schema validation, data quality checks, and integration tests before anything reaches production. No more "it works on my machine."</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">2</div>
+        <div class="lc-content">
+          <strong>Data Quality as Code</strong>
+          <span>Quality rules are written in frameworks like Great Expectations or dbt tests and executed automatically. A failing quality gate halts the pipeline entirely — bad data never reaches downstream consumers.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">3</div>
+        <div class="lc-content">
+          <strong>Observability &amp; Monitoring</strong>
+          <span>Data lineage, pipeline freshness, schema drift, and volume anomalies are tracked in real time. Teams are alerted before the business discovers a broken dashboard.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">4</div>
+        <div class="lc-content">
+          <strong>Self-Service &amp; Democratisation</strong>
+          <span>Curated data catalogs allow business analysts and scientists to discover and access trusted data without engineering tickets. Governance is embedded, not bolted on.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">5</div>
+        <div class="lc-content">
+          <strong>Orchestration &amp; Automation</strong>
+          <span>Tools like Airflow, Prefect, and Dagster coordinate complex dependency graphs. Pipelines are scheduled, event-triggered, and retry automatically on transient failures.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">6</div>
+        <div class="lc-content">
+          <strong>Collaboration &amp; Version Control</strong>
+          <span>All SQL transformations, configs, and test definitions live in repositories. Pull requests, code reviews, and documentation are standard practice for data work — not just software.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>The DataOps Pipeline Architecture</h3>
+    <p>A DataOps pipeline is not a single technology — it is a layered system of specialised tools, each accountable for one part of the data lifecycle.</p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <span class="pip-icon">📥</span>
+        <div class="pip-title">Ingest</div>
+        <div class="pip-sub">Kafka · Debezium · Fivetran</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <span class="pip-icon">🗄️</span>
+        <div class="pip-title">Store</div>
+        <div class="pip-sub">S3 · ADLS · HDFS</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <span class="pip-icon">⚙️</span>
+        <div class="pip-title">Transform</div>
+        <div class="pip-sub">dbt · Spark · Airflow</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <span class="pip-icon">🏛️</span>
+        <div class="pip-title">Serve</div>
+        <div class="pip-sub">Snowflake · Redshift · BigQuery</div>
+      </div>
+      <div class="pipe-arrow">→</div>
+      <div class="pipe-step">
+        <span class="pip-icon">📊</span>
+        <div class="pip-title">Consume</div>
+        <div class="pip-sub">BI · Dashboards · APIs</div>
+      </div>
+    </div>
+
+    <h3>DataOps in Data Warehousing — Key Patterns</h3>
+    <p>
+      Modern DataOps favours <strong>ELT over ETL</strong>: raw data lands in the warehouse first, and dbt models transform it inside the warehouse engine — versioned, testable, and reproducible. Complementing this is the concept of <strong>Data Contracts</strong> — explicit agreements between data producers and consumers on schema, freshness SLAs, and quality expectations. When a producer breaks a contract, automated alerts fire immediately, long before an analyst discovers a broken report.
+    </p>
+    <p>
+      <strong>Incremental loading</strong> patterns ensure that only new or changed records are processed each run, dramatically cutting compute costs and reducing latency. <strong>Infrastructure as Code (IaC)</strong> keeps development, staging, and production warehouse environments identical, so developers can test against realistic data volumes before shipping.
+    </p>
+
+    <h3>Core DataOps Tools at a Glance</h3>
+    <table class="tools-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Tools</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Orchestration</td><td>Apache Airflow, Prefect, Dagster</td></tr>
+        <tr><td>Transformation</td><td>dbt (data build tool), Apache Spark</td></tr>
+        <tr><td>Data Quality</td><td>Great Expectations, Soda, Monte Carlo</td></tr>
+        <tr><td>Ingestion</td><td>Fivetran, Airbyte, Kafka, Debezium</td></tr>
+        <tr><td>Warehousing</td><td>Snowflake, BigQuery, Redshift, Databricks</td></tr>
+        <tr><td>Catalog / Lineage</td><td>Apache Atlas, DataHub, Alation</td></tr>
+        <tr><td>Version Control</td><td>Git, DVC (Data Version Control)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MLOPS SECTION -->
+  <div class="section-block">
+    <div class="section-label">Part 02</div>
+    <h2>What is MLOps?</h2>
+    <p>
+      MLOps — Machine Learning Operations — is what happens when a data science team stops celebrating a model's AUC score and starts asking the harder question: <em>"What does it take to run this in production, reliably, six months from now?"</em>
+    </p>
+    <p>
+      Without MLOps, the pattern is painfully familiar. A data scientist trains a brilliant model in a notebook. It gets deployed via a manual script. Two months later, the underlying data has drifted, the predictions have degraded silently, and no one knows why. MLOps exists to break this cycle by applying the engineering discipline of DevOps — automation, versioning, monitoring, and collaboration — to every stage of the ML lifecycle.
+    </p>
+
+    <div class="callout blue">
+      The traditional ML team treats deployment as a finish line. The MLOps mindset treats it as a starting gun — the moment when real monitoring, retraining, and governance work begins.
+    </div>
+
+    <h3>The MLOps Lifecycle — Six Stages</h3>
+    <div class="lifecycle">
+      <div class="lc-step">
+        <div class="lc-num">1</div>
+        <div class="lc-content">
+          <strong>Data Collection &amp; Feature Engineering</strong>
+          <span>Raw data is sourced from the warehouse, transformed into features, and versioned using DVC or a dedicated feature store. Train/test splits are reproducible and tracked.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">2</div>
+        <div class="lc-content">
+          <strong>Model Training &amp; Experimentation</strong>
+          <span>Every training run is logged — hyperparameters, metrics, artifacts, environment configs — using MLflow or Weights &amp; Biases. No experiment is ever lost or impossible to reproduce.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">3</div>
+        <div class="lc-content">
+          <strong>Model Evaluation &amp; Validation</strong>
+          <span>Automated performance gates check accuracy, bias, and fairness benchmarks. A/B testing frameworks validate model versions in controlled conditions before full rollout.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">4</div>
+        <div class="lc-content">
+          <strong>Model Deployment &amp; Serving</strong>
+          <span>Models are served as REST APIs (FastAPI, BentoML) for online inference or scheduled jobs for batch. Canary and blue-green deployments ensure zero-downtime rollouts.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">5</div>
+        <div class="lc-content">
+          <strong>Monitoring &amp; Observability</strong>
+          <span>Data drift (KS test, PSI) and concept drift are tracked continuously using tools like Evidently AI, Arize, and Whylogs. Business KPIs are monitored alongside model metrics.</span>
+        </div>
+      </div>
+      <div class="lc-step">
+        <div class="lc-num">6</div>
+        <div class="lc-content">
+          <strong>Retraining &amp; Continuous Learning</strong>
+          <span>Drift thresholds trigger automated retraining pipelines. The new model is validated against performance gates and, if it passes, promoted to production without human intervention.</span>
+        </div>
+      </div>
+    </div>
+
+    <h3>Key MLOps Components</h3>
+    <p>
+      A mature MLOps platform is composed of several interlocking components. The <strong>Feature Store</strong> (Feast, Tecton, SageMaker Feature Store) provides a central repository of pre-computed, reusable ML features, solving the training-serving skew problem that plagues many teams. The <strong>Model Registry</strong> is the single source of truth for all trained models — every version is catalogued with its performance metrics, lineage, and promotion history.
+    </p>
+    <p>
+      <strong>CI/CD for ML</strong> — powered by GitHub Actions, Kubeflow Pipelines, or Vertex AI Pipelines — automates the full pipeline from code commit to deployed model. Every change must pass metric gates before promotion. And <strong>Model Monitoring</strong> tools close the loop by continuously observing production predictions and triggering alerts — or retraining jobs — when model quality falls below defined thresholds.
+    </p>
+  </div>
+
+  <!-- COMPARISON -->
+  <div class="section-block">
+    <div class="section-label">Part 03</div>
+    <h2>DataOps vs. MLOps — Differences &amp; Deep Synergies</h2>
+    <p>
+      DataOps and MLOps are often discussed in the same breath, but they are distinct disciplines focused on different artefacts. Understanding where they differ — and where they converge — is essential for building a coherent data platform strategy.
+    </p>
+
+    <div class="compare-grid">
+      <div class="compare-card dataops">
+        <h4>DataOps</h4>
+        <ul>
+          <li>Focuses on data pipelines &amp; ELT workflows</li>
+          <li>Primary output: clean, reliable, governed data</li>
+          <li>Users: Data Engineers, Analysts, BI developers</li>
+          <li>Core tools: Airflow, dbt, Fivetran, Great Expectations</li>
+          <li>Concerns: freshness, quality, lineage, access control</li>
+          <li>Manages the data warehouse &amp; data lake</li>
+        </ul>
+      </div>
+      <div class="compare-card mlops">
+        <h4>MLOps</h4>
+        <ul>
+          <li>Focuses on model training &amp; serving pipelines</li>
+          <li>Primary output: deployed, monitored ML models</li>
+          <li>Users: Data Scientists, ML Engineers, Researchers</li>
+          <li>Core tools: MLflow, SageMaker, Kubeflow, BentoML</li>
+          <li>Concerns: accuracy, drift, fairness, inference latency</li>
+          <li>Manages the model registry &amp; feature store</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="shared-box">
+      <h4>What they share</h4>
+      <div class="shared-tags">
+        <span class="shared-tag">CI/CD automation</span>
+        <span class="shared-tag">Git version control</span>
+        <span class="shared-tag">Monitoring &amp; observability</span>
+        <span class="shared-tag">Infrastructure as Code</span>
+        <span class="shared-tag">Automated testing</span>
+        <span class="shared-tag">Collaboration culture</span>
+        <span class="shared-tag">Artifact management</span>
+        <span class="shared-tag">Reproducibility</span>
+      </div>
+    </div>
+
+    <p style="margin-top: 20px;">
+      The most important relationship between DataOps and MLOps is directional: <strong>DataOps feeds MLOps</strong>. The quality, freshness, and completeness of the data that DataOps manages directly determines the quality of the models that MLOps operates. An ML team with a poor DataOps foundation is building on sand.
+    </p>
+  </div>
+
+  <!-- USE CASES -->
+  <div class="section-block">
+    <div class="section-label">Part 04</div>
+    <h2>Real-World Use Cases — Who is Doing This at Scale?</h2>
+    <p>
+      The best proof that DataOps and MLOps work is not in architecture diagrams — it is in the production systems of companies that have made these disciplines central to their engineering culture.
+    </p>
+
+    <div class="usecase-grid">
+      <div class="uc-card">
+        <div class="uc-company">Netflix</div>
+        <div class="uc-industry">Streaming &amp; Entertainment</div>
+        <div class="uc-item">
+          <span class="uc-badge dataops">DataOps</span>
+          <p class="uc-text">Petabytes of viewing data flow through Flink + Kafka + Iceberg pipelines with automated quality checks ensuring clean data reaches the recommendation warehouse.</p>
+        </div>
+        <div class="uc-item">
+          <span class="uc-badge mlops">MLOps</span>
+          <p class="uc-text">Hundreds of recommendation models — bandit algorithms, two-tower neural networks — are trained daily, continuously A/B tested, and monitored for engagement drops.</p>
+        </div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-company">Uber</div>
+        <div class="uc-industry">Ride-sharing &amp; Logistics</div>
+        <div class="uc-item">
+          <span class="uc-badge dataops">DataOps</span>
+          <p class="uc-text">Michelangelo: DataOps pipelines ingest GPS, trip, and surge data into a real-time feature store, enabling millisecond-latency feature serving.</p>
+        </div>
+        <div class="uc-item">
+          <span class="uc-badge mlops">MLOps</span>
+          <p class="uc-text">ETA, surge pricing, fraud detection, and driver-matching models are deployed with automated retraining, canary releases, and real-time drift monitoring.</p>
+        </div>
+      </div>
+      <div class="uc-card">
+        <div class="uc-company">Airbnb</div>
+        <div class="uc-industry">Travel &amp; Marketplace</div>
+        <div class="uc-item">
+          <span class="uc-badge dataops">DataOps</span>
+          <p class="uc-text">Minerva — Airbnb's semantic layer — combined with DataOps ensures consistent metric definitions across all business units. Data contracts prevent metric disagreements.</p>
+        </div>
+        <div class="uc-item">
+          <span class="uc-badge mlops">MLOps</span>
+          <p class="uc-text">Dynamic pricing, search ranking, and trust &amp; safety classifiers use fully versioned MLOps pipelines with experiment tracking and automated safety gates before deployment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NUMERICAL EXAMPLES -->
+  <div class="section-block">
+    <div class="section-label">Numerical Examples</div>
+    <h2>Putting Numbers to the Theory</h2>
+    <p>
+      Abstract methodology only becomes convincing when you can walk through real data. Below are two worked examples — one for DataOps and one for MLOps — using realistic figures from an e-commerce platform processing customer transactions. Follow the numbers through each stage to see exactly how both disciplines behave in practice.
+    </p>
+
+    <!-- ═══ DATAOPS NUMERICAL EXAMPLE ═══ -->
+    <h3>Example 1 — DataOps: Daily Sales Pipeline Run</h3>
+    <p>
+      An e-commerce company runs a nightly Airflow DAG that ingests raw transactions from PostgreSQL, loads them into S3, transforms them via dbt inside Snowflake, and serves clean revenue metrics to Tableau dashboards. Here is a real pipeline run with actual row counts, latency figures, and quality gate outcomes.
+    </p>
+
+    <div class="num-example-box">
+      <div class="num-example-header">
+        <span class="ex-icon">🔢</span>
+        <span class="ex-title">Pipeline Run ·</span>
+        <span class="ex-scenario">E-Commerce Daily Sales — 2024-04-15 02:00 UTC</span>
+      </div>
+      <div class="num-example-body">
+
+        <table class="run-table">
+          <thead>
+            <tr>
+              <th>Stage</th>
+              <th>Tool</th>
+              <th>Input Records</th>
+              <th>Output Records</th>
+              <th>Duration</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Ingest</strong> — CDC from PostgreSQL</td>
+              <td class="mono">Debezium</td>
+              <td class="mono">248,531</td>
+              <td class="mono">248,531</td>
+              <td class="mono">4m 12s</td>
+              <td><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>Land</strong> — Raw Parquet to S3</td>
+              <td class="mono">Airbyte</td>
+              <td class="mono">248,531</td>
+              <td class="mono">248,531</td>
+              <td class="mono">1m 38s</td>
+              <td><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>Quality Gate 1</strong> — Null check on <code>order_id</code></td>
+              <td class="mono">Great Expectations</td>
+              <td class="mono">248,531</td>
+              <td class="mono">—</td>
+              <td class="mono">0m 22s</td>
+              <td><span class="status-pass">PASS (0 nulls)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Quality Gate 2</strong> — Amount range check (₹0–₹500,000)</td>
+              <td class="mono">Great Expectations</td>
+              <td class="mono">248,531</td>
+              <td class="mono">—</td>
+              <td class="mono">0m 18s</td>
+              <td><span class="status-warn">WARN (3 outliers flagged)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Transform</strong> — Staging model <code>stg_orders</code></td>
+              <td class="mono">dbt</td>
+              <td class="mono">248,531</td>
+              <td class="mono">248,528</td>
+              <td class="mono">2m 04s</td>
+              <td><span class="status-pass">PASS (3 dupes removed)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Transform</strong> — Mart model <code>fct_daily_revenue</code></td>
+              <td class="mono">dbt</td>
+              <td class="mono">248,528</td>
+              <td class="mono">1,440 rows (per minute)</td>
+              <td class="mono">1m 51s</td>
+              <td><span class="status-pass">PASS</span></td>
+            </tr>
+            <tr>
+              <td><strong>Quality Gate 3</strong> — Revenue row count vs yesterday ±20%</td>
+              <td class="mono">dbt test</td>
+              <td class="mono">248,528</td>
+              <td class="mono">—</td>
+              <td class="mono">0m 09s</td>
+              <td><span class="status-fail">FAIL — count dropped 31% → pipeline halted</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="num-annotation">
+          <strong>What happened?</strong> Yesterday's pipeline processed 360,184 records. Today's run produced only 248,528 — a 31% drop, exceeding the ±20% data contract threshold. DataOps automation immediately halted the pipeline, paged the on-call engineer, and prevented a broken revenue figure from reaching the Tableau dashboard. Root cause: an upstream API outage dropped 3 hours of order data. The pipeline was re-run after data backfill, and all quality gates passed on the second attempt.
+        </div>
+
+        <div class="metric-row" style="margin-top:20px;">
+          <div class="metric-cell">
+            <div class="mc-val">248K</div>
+            <div class="mc-label">Raw records ingested</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val blue">10m 34s</div>
+            <div class="mc-label">Total pipeline duration</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val orange">31%</div>
+            <div class="mc-label">Record count drop that triggered halt</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val">3</div>
+            <div class="mc-label">Quality gates evaluated automatically</div>
+          </div>
+        </div>
+
+        <p style="font-size:13.5px; color:var(--text-muted); margin-top:8px; font-weight:300;">
+          Without DataOps quality gates, all 248,528 records would have silently loaded into Snowflake. The revenue dashboard would have shown a 31% revenue drop that did not actually occur — leading to incorrect business decisions before anyone noticed the pipeline fault.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ═══ ELT Incremental Cost Calculation ═══ -->
+    <h3>The Cost Impact of Incremental Loading</h3>
+    <p>
+      One of DataOps' most impactful patterns is incremental ELT. Instead of reprocessing the entire historical table every night, the pipeline processes only new or changed records. Here is the arithmetic for the same e-commerce platform over one month:
+    </p>
+
+    <div class="num-example-box">
+      <div class="num-example-header">
+        <span class="ex-icon">💰</span>
+        <span class="ex-title">Cost Calculation ·</span>
+        <span class="ex-scenario">Full Refresh vs. Incremental Load — 30-day Snowflake Compute</span>
+      </div>
+      <div class="num-example-body">
+        <table class="run-table">
+          <thead>
+            <tr><th>Strategy</th><th>Rows Processed / Night</th><th>Snowflake Credits / Night</th><th>Monthly Cost (@ $3/credit)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Full Refresh</strong> (reprocess all history)</td>
+              <td class="mono">42,000,000</td>
+              <td class="mono">14.8 credits</td>
+              <td class="mono">$1,332</td>
+            </tr>
+            <tr>
+              <td><strong>Incremental Load</strong> (last 24 hrs only)</td>
+              <td class="mono">248,531</td>
+              <td class="mono">0.09 credits</td>
+              <td class="mono">$8.10</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="num-annotation">
+          <strong>Result:</strong> Incremental loading reduces nightly compute from 14.8 to 0.09 Snowflake credits — a <strong>99.4% cost reduction</strong> ($1,332 → $8.10/month). Over a year, this single DataOps pattern saves approximately <strong>$15,647</strong> on compute alone, before accounting for reduced latency and faster pipeline runtimes.
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MLOPS NUMERICAL EXAMPLE ═══ -->
+    <h3>Example 2 — MLOps: Fraud Detection Model Lifecycle</h3>
+    <p>
+      A fintech company operates a real-time fraud detection system. The ML team uses the full MLOps lifecycle — from feature engineering through experiment tracking, deployment, and drift-triggered retraining. Here are the numbers at each stage.
+    </p>
+
+    <div class="num-example-box">
+      <div class="num-example-header">
+        <span class="ex-icon">🤖</span>
+        <span class="ex-title">MLOps Lifecycle ·</span>
+        <span class="ex-scenario">Fraud Detection Model — XGBoost Classifier</span>
+      </div>
+      <div class="num-example-body">
+
+        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:16px; font-weight:300;">
+          <strong style="color:var(--text);">Stage 1 — Dataset.</strong> The feature store serves 3 pre-computed features per transaction, sourced from the DataOps warehouse pipeline. Training dataset: <strong>2,400,000 transactions</strong> from the past 6 months (80/20 train/test split). Class imbalance: <strong>0.38% fraudulent</strong> (9,120 fraud vs. 2,390,880 legitimate).
+        </p>
+
+        <!-- Experiment tracking table -->
+        <p style="font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">Stage 2 — Experiment Tracking (MLflow Run Comparison)</p>
+
+        <table class="exp-table">
+          <thead>
+            <tr>
+              <th>Run ID</th>
+              <th>Model</th>
+              <th>Max Depth</th>
+              <th>n_estimators</th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-Score</th>
+              <th>AUC-ROC</th>
+              <th>Train Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="label-col">run_001</td>
+              <td>XGBoost</td>
+              <td>4</td>
+              <td>100</td>
+              <td>0.71</td>
+              <td>0.63</td>
+              <td>0.67</td>
+              <td>0.941</td>
+              <td>4m 12s</td>
+            </tr>
+            <tr>
+              <td class="label-col">run_002</td>
+              <td>XGBoost</td>
+              <td>6</td>
+              <td>200</td>
+              <td>0.78</td>
+              <td>0.71</td>
+              <td>0.74</td>
+              <td>0.963</td>
+              <td>9m 41s</td>
+            </tr>
+            <tr class="winner">
+              <td class="label-col">run_003</td>
+              <td>XGBoost</td>
+              <td>6</td>
+              <td>300</td>
+              <td>0.83</td>
+              <td>0.76</td>
+              <td>0.79</td>
+              <td>0.971</td>
+              <td>14m 08s</td>
+            </tr>
+            <tr>
+              <td class="label-col">run_004</td>
+              <td>Random Forest</td>
+              <td>8</td>
+              <td>300</td>
+              <td>0.79</td>
+              <td>0.68</td>
+              <td>0.73</td>
+              <td>0.952</td>
+              <td>22m 30s</td>
+            </tr>
+            <tr>
+              <td class="label-col">run_005</td>
+              <td>Logistic Reg.</td>
+              <td>—</td>
+              <td>—</td>
+              <td>0.61</td>
+              <td>0.54</td>
+              <td>0.57</td>
+              <td>0.887</td>
+              <td>0m 48s</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="num-annotation blue-ann" style="margin-bottom:20px;">
+          <strong>run_003 promoted to Staging.</strong> MLflow automatically flagged run_003 as the best candidate: AUC-ROC = 0.971 (above the 0.960 gate), Precision = 0.83, F1 = 0.79. The model was registered in the MLflow Model Registry as <code>fraud-detector v1.3</code> and pushed to Staging for shadow-mode validation before production promotion.
+        </div>
+
+        <!-- Production metrics -->
+        <p style="font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px;">Stage 4 — Production Metrics (First 30 Days)</p>
+
+        <div class="metric-row">
+          <div class="metric-cell">
+            <div class="mc-val">12.4M</div>
+            <div class="mc-label">Transactions scored in 30 days</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val blue">47,232</div>
+            <div class="mc-label">Fraud cases correctly flagged</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val orange">8,941</div>
+            <div class="mc-label">False positives (blocked legit txns)</div>
+          </div>
+          <div class="metric-cell">
+            <div class="mc-val purple">18ms</div>
+            <div class="mc-label">Avg inference latency (p95)</div>
+          </div>
+        </div>
+
+        <!-- Drift detection -->
+        <p style="font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted); margin-top:20px; margin-bottom:8px;">Stage 5 — Drift Monitoring (Day 31–90 in Production)</p>
+        <p class="drift-threshold-line">Retraining trigger threshold: PSI &gt; 0.20 on any feature &nbsp;|&nbsp; Accuracy drop &gt; 3% from baseline</p>
+
+        <div class="drift-chart">
+          <div class="drift-row">
+            <div class="drift-label">txn_amount</div>
+            <div class="drift-bar-wrap">
+              <div class="drift-bar safe" style="width:22%"></div>
+            </div>
+            <div class="drift-val">PSI 0.044</div>
+          </div>
+          <div class="drift-row">
+            <div class="drift-label">merchant_cat</div>
+            <div class="drift-bar-wrap">
+              <div class="drift-bar warn" style="width:55%"></div>
+            </div>
+            <div class="drift-val">PSI 0.109</div>
+          </div>
+          <div class="drift-row">
+            <div class="drift-label">hour_of_day</div>
+            <div class="drift-bar-wrap">
+              <div class="drift-bar safe" style="width:15%"></div>
+            </div>
+            <div class="drift-val">PSI 0.031</div>
+          </div>
+          <div class="drift-row">
+            <div class="drift-label">Model Accuracy</div>
+            <div class="drift-bar-wrap">
+              <div class="drift-bar danger" style="width:88%"></div>
+            </div>
+            <div class="drift-val">↓ 5.2%</div>
+          </div>
+        </div>
+
+        <div class="num-annotation">
+          <strong>Day 87 — Automated retraining triggered.</strong> Model accuracy dropped 5.2% from baseline (0.971 → 0.919), exceeding the 3% threshold. <code>merchant_category</code> PSI reached 0.109 (warning zone), indicating new merchant types had entered the transaction mix. The MLOps CI/CD pipeline automatically: (1) fetched the latest 60 days of labelled transactions from the feature store — <strong>4,800,000 rows</strong>, (2) retrained XGBoost with the same hyperparameters from run_003, (3) validated the new model: AUC-ROC = 0.968 (above gate), (4) promoted <code>fraud-detector v1.4</code> to production via canary release at 10% traffic. Total retraining time: <strong>31 minutes</strong>, zero human intervention required.
+        </div>
+
+        <div class="code-block">
+          <pre><span class="c-comment"># MLflow auto-trigger retraining (simplified)</span>
+<span class="c-key">if</span> accuracy_drop > <span class="c-num">0.03</span> <span class="c-key">or</span> max_psi > <span class="c-num">0.20</span>:
+    new_data = feature_store.<span class="c-fn">get_features</span>(
+        entity=<span class="c-str">"transaction"</span>,
+        start=<span class="c-str">"2024-04-15"</span>, end=<span class="c-str">"2024-06-14"</span>   <span class="c-comment"># 60-day window</span>
+    )  <span class="c-comment"># → 4,800,000 rows returned</span>
+
+    run = mlflow.<span class="c-fn">start_run</span>(run_name=<span class="c-str">"auto_retrain_v1.4"</span>)
+    model = XGBClassifier(max_depth=<span class="c-num">6</span>, n_estimators=<span class="c-num">300</span>)
+    model.<span class="c-fn">fit</span>(X_train, y_train)
+
+    auc = roc_auc_score(y_test, model.<span class="c-fn">predict_proba</span>(X_test)[:,<span class="c-num">1</span>])
+    mlflow.<span class="c-fn">log_metric</span>(<span class="c-str">"auc_roc"</span>, auc)      <span class="c-comment"># → 0.968</span>
+
+    <span class="c-key">if</span> auc > <span class="c-num">0.960</span>:   <span class="c-comment"># performance gate ✓</span>
+        registry.<span class="c-fn">promote</span>(<span class="c-str">"fraud-detector"</span>, version=<span class="c-str">"1.4"</span>,
+                          stage=<span class="c-str">"Production"</span>, traffic=<span class="c-num">0.10</span>)</pre>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ Combined ROI ═══ -->
+    <h3>Combined ROI — DataOps + MLOps Together</h3>
+    <p>
+      When DataOps and MLOps operate as a unified platform, the numbers compound. Below is a simplified 12-month ROI estimate for the same e-commerce/fintech platform.
+    </p>
+
+    <div class="num-example-box">
+      <div class="num-example-header">
+        <span class="ex-icon">📈</span>
+        <span class="ex-title">12-Month ROI ·</span>
+        <span class="ex-scenario">Unified DataOps + MLOps Platform</span>
+      </div>
+      <div class="num-example-body">
+        <table class="run-table">
+          <thead>
+            <tr><th>Source of Value</th><th>Mechanism</th><th>Annual Saving / Gain</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Compute cost reduction</strong></td>
+              <td>Incremental ELT replacing full refresh (DataOps)</td>
+              <td class="mono">$15,647 saved</td>
+            </tr>
+            <tr>
+              <td><strong>Engineer time saved</strong></td>
+              <td>Automated pipeline tests replace manual QA (DataOps)</td>
+              <td class="mono">~180 hrs/yr × $85/hr = $15,300</td>
+            </tr>
+            <tr>
+              <td><strong>Fraud caught earlier</strong></td>
+              <td>Automated retraining reduced accuracy gap by 5.2% for 87 fewer days</td>
+              <td class="mono">~$420,000 in fraud prevented</td>
+            </tr>
+            <tr>
+              <td><strong>Faster model deployment</strong></td>
+              <td>CI/CD reduced deploy time from 3 weeks to 2 days (MLOps)</td>
+              <td class="mono">19 days × 2 deploys/yr × $12K/day risk</td>
+            </tr>
+            <tr>
+              <td><strong>Prevented broken dashboards</strong></td>
+              <td>Quality gate halted 4 faulty pipeline runs (DataOps)</td>
+              <td class="mono">Avoided 4 × $8K business impact incidents</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="num-annotation">
+          <strong>Key insight:</strong> The most significant ROI does not come from infrastructure savings — it comes from the <em>speed at which errors are caught</em>. A fraud model running at 0.919 AUC (instead of 0.971) for 87 days means tens of thousands of transactions assessed by a degraded model. DataOps ensures clean, timely training data; MLOps ensures the model is retrained before business impact accumulates. The two disciplines are inseparable in practice.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /numerical examples -->
+
+  <!-- CHALLENGES -->
+  <div class="section-block">
+    <div class="section-label">Part 05</div>
+    <h2>The Hard Problems — Challenges You Should Anticipate</h2>
+    <p>
+      Adopting DataOps and MLOps is not a weekend project. Both disciplines introduce organisational and technical complexity that teams frequently underestimate. Here are the challenges that matter most.
+    </p>
+
+    <div class="callout orange">
+      <strong>Data &amp; Model Versioning:</strong> Keeping data pipeline versions and trained model artifacts in sync across time is genuinely hard. Technologies like DVC, Delta Lake, and Apache Iceberg provide time-travel capabilities, but they require consistent discipline to use effectively.
+    </div>
+
+    <div class="callout purple">
+      <strong>Organisational Silos:</strong> DataOps and MLOps require deep collaboration between Data Engineers, Data Scientists, ML Engineers, and business stakeholders — teams that have historically operated with different tools, incentives, and vocabularies.
+    </div>
+
+    <div class="callout">
+      <strong>Reproducibility:</strong> Re-running a training job six months later should produce the same model. This requires pinning data versions, library versions, random seeds, and compute environments with near-obsessive precision.
+    </div>
+
+    <div class="callout blue">
+      <strong>Drift Detection at Scale:</strong> Detecting model and concept drift without flooding teams with false alerts is a genuine research problem. Poorly calibrated monitoring leads either to unnecessary retraining or silent degradation — both are costly.
+    </div>
+  </div>
+
+  <!-- BEST PRACTICES -->
+  <div class="section-block">
+    <div class="section-label">Part 06</div>
+    <h2>Best Practices — What Actually Works in Production</h2>
+
+    <div class="bp-grid">
+      <div class="bp-card">
+        <div class="bp-icon">📂</div>
+        <div>
+          <div class="bp-title">Treat Everything as Code</div>
+          <div class="bp-desc">Pipelines, SQL transforms, quality rules, infrastructure definitions, and model configs must all live in version-controlled repositories. GitOps is the foundation of everything else.</div>
+        </div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">📋</div>
+        <div>
+          <div class="bp-title">Implement Data Contracts Early</div>
+          <div class="bp-desc">Define schema, freshness, and quality SLAs between producers and consumers before you build a single pipeline. Fixing broken contracts upstream is far cheaper than fixing broken reports downstream.</div>
+        </div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">🔭</div>
+        <div>
+          <div class="bp-title">Start with Observability</div>
+          <div class="bp-desc">Build monitoring infrastructure before you build advanced features. Know when your data is late, wrong, or drifting before your stakeholders do. Observability is not optional.</div>
+        </div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">🏪</div>
+        <div>
+          <div class="bp-title">Use a Feature Store</div>
+          <div class="bp-desc">A shared feature store eliminates redundant feature computation across teams and ensures that training and serving environments compute features identically — preventing one of the most common causes of model degradation.</div>
+        </div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">🧪</div>
+        <div>
+          <div class="bp-title">Automate Testing at Every Layer</div>
+          <div class="bp-desc">Unit tests for transforms, integration tests for pipeline dependencies, statistical tests for data distributions, and performance gates before model promotion. No layer should be exempt.</div>
+        </div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">🔁</div>
+        <div>
+          <div class="bp-title">Design for Failure &amp; Idempotency</div>
+          <div class="bp-desc">Pipelines will fail. Design every step to be idempotent — running it twice should produce the same result as running it once. Graceful retries with exponential backoff are non-negotiable in production.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUTURE TRENDS -->
+  <div class="section-block">
+    <div class="section-label">Part 07</div>
+    <h2>What's Next — The Future of DataOps &amp; MLOps</h2>
+    <p>
+      The operational landscape for data and AI is evolving rapidly. These are the trends that will define the next generation of data platforms.
+    </p>
+
+    <div class="trends-list">
+      <div class="trend-item">
+        <div class="trend-icon">🤖</div>
+        <div>
+          <div class="trend-title">LLMOps — MLOps for Large Language Models</div>
+          <div class="trend-desc">As LLMs become production workloads, a new discipline is emerging around prompt versioning, RAG pipeline management, fine-tuning workflows, hallucination monitoring, and LLM cost governance. MLOps principles apply, but the artefacts — prompts, vector stores, adapters — are entirely new.</div>
+        </div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-icon">🏗️</div>
+        <div>
+          <div class="trend-title">Unified Data + AI Platforms</div>
+          <div class="trend-desc">Databricks (Unity Catalog), Snowflake (Snowpark ML), and Google Vertex AI are converging DataOps and MLOps into single platforms with unified governance, lineage, and compute — dramatically reducing the tool fragmentation that makes these disciplines expensive to adopt.</div>
+        </div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-icon">📐</div>
+        <div>
+          <div class="trend-title">DataOps 2.0 — The Semantic Layer</div>
+          <div class="trend-desc">Metric layers like the dbt Semantic Layer and AtScale provide a single, authoritative definition of business metrics — usable simultaneously by BI tools and ML pipelines. This eliminates the "which revenue number is right?" debates that plague data-driven organisations.</div>
+        </div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-icon">🕸️</div>
+        <div>
+          <div class="trend-title">Data Mesh Architecture</div>
+          <div class="trend-desc">The centralised data platform is giving way to domain-oriented, decentralised ownership where each business domain manages its own DataOps pipelines and data products, governed by a federated catalog with global standards.</div>
+        </div>
+      </div>
+      <div class="trend-item">
+        <div class="trend-icon">⚡</div>
+        <div>
+          <div class="trend-title">Real-time Feature Engineering</div>
+          <div class="trend-desc">Stream processing via Apache Flink and Spark Streaming enables millisecond-latency feature computation, allowing ML models to react to live events — fraud signals, pricing triggers, real-time personalisation — rather than batch-computed features from hours ago.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KEY TAKEAWAYS -->
+  <div class="section-block">
+    <div class="section-label">Summary</div>
+    <h2>Five Things to Remember</h2>
+
+    <div class="takeaway-list">
+      <div class="takeaway">
+        <div class="tk-num">1</div>
+        <div class="tk-text">DataOps applies Agile and DevOps principles to data pipelines, ensuring that data reaching analysts and models is reliable, fresh, and trusted — by design, not by hope.</div>
+      </div>
+      <div class="takeaway">
+        <div class="tk-num">2</div>
+        <div class="tk-text">MLOps operationalises machine learning, transforming experimental notebooks into production-grade systems that are monitored, versioned, and automatically retrained when the world changes.</div>
+      </div>
+      <div class="takeaway">
+        <div class="tk-num">3</div>
+        <div class="tk-text">In Data Warehousing, DataOps manages the ELT pipeline, quality gates, orchestration, and governance that powers every downstream analytical and ML workload.</div>
+      </div>
+      <div class="takeaway">
+        <div class="tk-num">4</div>
+        <div class="tk-text">In Data Mining, MLOps connects discovered patterns — clustering, classification, association rules — to deployed, continuously updated production models with clear lineage and governance.</div>
+      </div>
+      <div class="takeaway">
+        <div class="tk-num">5</div>
+        <div class="tk-text">DataOps and MLOps are not competing frameworks — they are complementary disciplines. DataOps feeds MLOps. A mature AI platform needs both to deliver trustworthy, scalable, and continuously improving intelligence.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING QUOTE -->
+  <div class="closing-quote">
+    <blockquote>"DataOps builds the roads. MLOps drives the cars. Both need a great map — your Data Warehouse."</blockquote>
+    <div class="q-attr">MLOps &amp; DataOps — Bridging Data Engineering &amp; Machine Learning</div>
+  </div>
+
+</div><!-- /article -->
+
+<footer>
+  <div class="footer-inner">
+    <p class="footer-author">Written by <strong>Yanala Lalit Aditya</strong></p>
+    <p class="footer-course">AP23110010288 · CSE-U · Data Warehousing &amp; Mining</p>
+  </div>
+</footer>
+
+</body>
+</html>
